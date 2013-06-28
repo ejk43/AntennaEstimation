@@ -1,0 +1,55 @@
+function [antAngle, antValid, antPossb] = ChartAntenna
+
+%% LOAD CONFIG
+global set;
+config;
+
+%% SETUP RUN
+dist = .1:.01:.5;
+tht  = -5*pi/4:pi/60:pi/4;
+
+ld = length(dist);
+lt = length(tht);
+antAngle = zeros(ld,lt);
+antValid = zeros(ld,lt);
+antPossb = zeros(ld,lt);
+for i = 1:ld;
+    for j = 1:lt;
+        d = dist(i)
+        t = tht(j);
+        
+%         DisplayRobot(d,t,pi/4,pi/4);
+        [antTht,valid,nposs] = CalcAntAngle(d,t);
+        
+        if abs(imag(antTht)) > 0
+           pause 
+        end
+        
+        % Save Results
+        antAngle(i,j) = antTht;
+        antPossb(i,j) = nposs;
+        antValid(i,j) = valid;
+        
+        %display
+%         DisplayRobot(d,t,antTht,pi/4);
+%         pause(0.05)
+    end
+end
+
+%% PLOTS
+figure(1)
+surf(tht,dist,set.ant_max-antAngle)
+xlabel('Tht Offset');
+ylabel('Distance Offset');
+title('Antenna Sensor Reading (ThtMax - deflection)')
+
+figure(2)
+surf(tht,dist,antValid)
+xlabel('Tht Offset');
+ylabel('Distance Offset');
+
+figure(3)
+surf(tht,dist,antPossb.*)
+xlabel('Tht Offset');
+ylabel('Distance Offset');
+
