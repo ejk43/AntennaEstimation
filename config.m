@@ -1,14 +1,15 @@
 % Configuration settings
 % EJ Kreinar
 
+%Initialize global settings
 global set;
 
 % Helping functions
 set.rotmat  = @(tht) [cos(tht) -sin(tht); sin(tht) cos(tht)];
 
 % Simulation parameters
-set.L1 = 0.4;
-set.L2 = 0.4;
+set.L1 = 0.3;
+set.L2 = 0.7;
 set.beta = pi/2; %Angle between the two segments
 set.ant_x = 0.1;
 set.ant_y = 0.1;
@@ -20,9 +21,9 @@ set.L3 = sqrt(set.L1^2+set.L2^2-2*set.L1*set.L2*cos(set.beta));
 set.alpha = asin(set.L2/set.L3*sin(set.beta));
 
 % Antenna Angle Calculations!
-set.angle_L1 = @(d,tht) acos((d+set.ant_x*sin(tht)+set.ant_y*cos(tht))/set.L1) - tht;
+set.angle_L1  = @(d,tht)  acos((d+set.ant_x*sin(tht)+set.ant_y*cos(tht))/set.L1) - tht;
 set.angle_L1n = @(d,tht) -acos((d+set.ant_x*sin(tht)+set.ant_y*cos(tht))/set.L1) - tht;
-set.angle_L2 = @(d,tht) acos((d+set.ant_x*sin(tht)+set.ant_y*cos(tht))/set.L3) + set.alpha - tht;
+set.angle_L2  = @(d,tht)  acos((d+set.ant_x*sin(tht)+set.ant_y*cos(tht))/set.L3) + set.alpha - tht;
 set.angle_L2n = @(d,tht) -acos((d+set.ant_x*sin(tht)+set.ant_y*cos(tht))/set.L3) + set.alpha - tht;
 
 % Robot Coordinate Parameters

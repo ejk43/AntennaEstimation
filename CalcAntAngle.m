@@ -10,18 +10,32 @@ function [ antTht, valid, npos] = CalcAntAngle( d, t )
 
 global set
 
-valid = true;
+antTht = set.ant_max;
+valid = false;
+npos = 0;
 
+% Check if the configuration (d,tht) is valid
+pts = [set.coord_robot(d,t)];
+if any(pts(:,2)<-0.0001)
+    return;
+end
+
+% Find all possible angles, then narrow down options
 angles = [set.angle_L1(d,t) set.angle_L1n(d,t) set.angle_L2(d,t) set.angle_L2n(d,t)];
 res = angles(angles>=set.ant_min & angles<=set.ant_max & abs(imag(angles))==0);
-npos = length(res);
-if isempty(res) %|| L1 > d
-    res = set.ant_max;
-    valid = false;
+if isempty(res)
+    return;
 end
-antTht = min(res);
-pts = set.coord_antR(d,t,antTht);
-if any(pts(:,2)<-0.0001)
-    antTht = set.ant_max;
-    valid = false;
+final = [];
+for ii=1:length(res)
+    pts = set.coord_antR(d,t,res(ii));
+    if all(pts(:,2)>-0.00001)
+        final = [final res(ii)];
+    end
 end
+if isempty(final)
+    return;
+end
+valid = true;
+npos = length(final);
+antTht = final;
